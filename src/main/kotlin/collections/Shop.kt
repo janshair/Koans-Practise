@@ -55,6 +55,23 @@ fun Customer.getOrderedProducts(): List<Product> = orders.flatMap { it.products 
 // Return all products that were ordered by at least one customer
 fun Shop.getOrderedProducts(): Set<Product> = customers.flatMap { it.orders }.flatMap { it.products }.toSet()
 
+// Return a customer who has placed the maximum amount of orders
+fun Shop.getCustomerWithMaxOrders(): Customer? = customers.maxByOrNull { it.orders.size }
+
+// Return the most expensive product that has been ordered by the given customer
+fun getMostExpensiveProductBy(customer: Customer): Product? = customer.orders.flatMap { it.products }.maxByOrNull { it.price }
+
+// Return the sum of prices for all the products ordered by a given customer
+fun moneySpentBy(customer: Customer): Double = customer.orders.flatMap { it.products }.sumOf { it.price }
+
+// Return the set of products that were ordered by all customers
+fun Shop.getProductsOrderedByAll(): Set<Product> {
+    TODO()
+}
+
+fun Customer.getOrderedProducts(): List<Product> =
+    TODO()
+
 data class Shop(val name: String, val customers: List<Customer>)
 
 data class Customer(val name: String, val city: City, val orders: List<Order>) {
