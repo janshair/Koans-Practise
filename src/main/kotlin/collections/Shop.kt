@@ -65,13 +65,33 @@ fun getMostExpensiveProductBy(customer: Customer): Product? = customer.orders.fl
 fun moneySpentBy(customer: Customer): Double = customer.orders.flatMap { it.products }.sumOf { it.price }
 
 // Return the set of products that were ordered by all customers
-fun Shop.getProductsOrderedByAll(): Set<Product> {
-    TODO()
+fun Shop.getProductsOrderedByAll(): Set<Product> = customers.fold(getOrderedProducts()) { orderedByAll, customer ->
+    orderedByAll.intersect(customer.getOrderedProducts())
 }
 
-fun Customer.getOrderedProducts(): List<Product> =
-    TODO()
+// Find the most expensive product among all the delivered products
+// ordered by the customer. Use `Order.isDelivered` flag.
+fun findMostExpensiveProductBy(customer: Customer): Product? = customer.orders.asSequence().filter { it.isDelivered }.asSequence().flatMap { it.products }.asSequence().maxByOrNull { it.price }
+//
+//// Find the most expensive product among all the delivered products
+//// ordered by the customer. Use `Order.isDelivered` flag.
+//fun findMostExpensiveProductBy(customer: Customer): Product? = customer.orders.filter { it.isDelivered }.flatMap { it.products }.maxByOrNull { it.price }
 
+// Count the amount of times a product was ordered.
+// Note that a customer may order the same product several times.
+fun Shop.getNumberOfTimesProductWasOrdered(product: Product): Int = customers.asSequence().flatMap { it.orders }.asSequence().flatMap { it.products }.asSequence().filter { it.name == product.name }.asSequence().count()
+// Count the amount of times a product was ordered.
+// Note that a customer may order the same product several times.
+//fun Shop.getNumberOfTimesProductWasOrdered(product: Product): Int = customers.flatMap { it.orders }.flatMap { it.products }.filter { it.name == product.name }.count()
+
+fun doSomethingWithCollection(collection: Collection<String>): Collection<String>? {
+
+    val groupsByLength = collection.groupBy { it.length }
+
+    val maximumSizeOfGroup = groupsByLength.values.map { it.size }.maxOrNull()
+
+    return groupsByLength.values.firstOrNull { it.size == maximumSizeOfGroup}
+}
 data class Shop(val name: String, val customers: List<Customer>)
 
 data class Customer(val name: String, val city: City, val orders: List<Order>) {
