@@ -4,6 +4,17 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
+fun <T, K: MutableCollection<T>> Collection<T>.partitionTo(collection: K, anotherCollection: K, func: (T) -> Boolean): Pair<K,K>
+    {
+       forEach {
+            if(func(it)){
+                collection.add(it)
+            } else {
+                anotherCollection.add(it)
+            }
+       }
+        return Pair(collection, anotherCollection)
+    }
 
 fun partitionWordsAndLines() {
     val (words, lines) = listOf("a", "a b", "c", "d e")
